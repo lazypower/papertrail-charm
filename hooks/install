@@ -9,8 +9,10 @@
 declare papertrail_endpoint=`config-get endpoint`
 
 #Should probably look for the exact string
-if  grep -qe ".papertrail" /etc/rsyslog.conf; then 
-  echo $papertrail_endpoint >> /etc/rsyslog.conf; 
+if ! grep -qe ".papertrail" /etc/rsyslog.conf; then 
+    echo "# PapertrailApp Log Aggregator" >> /etc/rsyslog.conf; 
+    echo "*.*     @$papertrail_endpoint" >> /etc/rsyslog.conf; 
+    juju-log "Installed Papertrail syslog support"
 fi
 
 service rsyslog restart
