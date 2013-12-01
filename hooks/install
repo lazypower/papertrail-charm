@@ -5,4 +5,12 @@
 # failing to account for a debconf question on a dependency, or trying to pull
 # from github without installing git first.
 
-apt-get install -y papertrail
+#apt-get install -y papertrail
+declare papertrail_endpoint=`config-get endpoint`
+
+#Should probably look for the exact string
+if  grep -qe ".papertrail" /etc/rsyslog.conf; then 
+  echo $papertrail_endpoint >> /etc/rsyslog.conf; 
+fi
+
+service rsyslog restart
