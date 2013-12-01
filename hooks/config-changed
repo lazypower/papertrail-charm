@@ -1,15 +1,9 @@
 #!/bin/bash
 # config-changed occurs everytime a new configuration value is updated (juju set)
 
-declare papertrail_endpoint=`config-get endpoint`
-declare papertrail_string="*.*    @$papertrail_endpoint"
+# re-run the installation script
 
+hooks/install
+hooks/stop
+hooks/start
 
-
-if ! grep -qe "$papertrail_string" /etc/rsyslog.conf; then 
-    echo "# PapertrailApp Log Aggregator" >> /etc/rsyslog.conf; 
-    echo "*.*     @$papertrail_endpoint" >> /etc/rsyslog.conf; 
-    juju-log "Installed Papertrail syslog support"
-fi
-
-service rsyslog restart

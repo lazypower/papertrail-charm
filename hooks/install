@@ -9,8 +9,8 @@ apt-get install -y ruby1.9.3 build-essential
 # Install papertrails application logging support
 gem install remote_syslog --no-ri --no-rdoc
 
-
-declare endpoint=`config-get endpoint`
+#its not unlikely that this will change in the future
+declare endpoint=`logs.papertrailapp.com`
 declare port=`config-get port`
 declare rsyslog_string="*.*    @$endpoint:$port"
 
@@ -36,8 +36,12 @@ if [ $port -eq 0 ]; then
 	return 1
 fi
 
-if ! grep -qe "$papertrail_string" /etc/rsyslog.conf; then 
+if ! grep -qe "$endpoint" /etc/rsyslog.conf; then 
     echo "$papertrail_string" >> /etc/rsyslog.conf; 
     juju-log "Installed Papertrail rsyslog support"
+else
+	sed "/$papertrail_string/d" -i /etc/rsyslog.conf
+	echo "$papertrail_string" >> /etc/rsyslog.conf;
+	juju-log "Installed Papertrail rsyslog support"
 fi
 
