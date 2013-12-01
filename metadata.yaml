@@ -1,0 +1,17 @@
+name: papertrail
+summary: This charm provides Papertrailapp logging from Papertrail as a subordinate for inclusion in other charm containers.
+maintainer: Charles Butler <Charles.Butler@bushido>
+description: |
+	This charm provides Papertrailapp logging from Papertrail as a subordinate for inclusion in other charm containers. Papertrail provides instant log visibility. Use Papertrail's time-saving log tools, flexible system groups, team-wide access, long-term archives, charts and analytics exports, monitoring webhooks, and 45-second setup to ship your rsyslog logs, application output, and much more to Papertrail's logging service.
+
+categories:
+  - misc
+subordinate: true
+provides:
+  logging:
+    interface: papertrail
+    scope: container
+requires:
+  juju-info:
+    interface: juju-info
+    scope: container
