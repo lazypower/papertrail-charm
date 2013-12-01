@@ -1,17 +1,43 @@
 #!/bin/bash
-# Here do anything needed to install the service
-# i.e. apt-get install -y foo  or  bzr branch http://myserver/mycode /srv/webroot
-# Make sure this hook exits cleanly and is idempotent, common problems here are
-# failing to account for a debconf question on a dependency, or trying to pull
-# from github without installing git first.
 
-#apt-get install -y papertrail
-declare papertrail_endpoint=`config-get endpoint`
-declare papertrail_string="*.*    @$papertrail_endpoint"
+
+# Install Dependencies for Application Logging
+# Install ruby 1.9.3 for latest -stable tree. 
+# TODO: Ruby changes fairly often, make this configurable 
+apt-get install -y ruby1.9.3 build-essential 
+
+# Install papertrails application logging support
+gem install remote_syslog --no-ri --no-rdoc
+
+
+declare endpoint=`config-get endpoint`
+declare port=`config-get port`
+declare rsyslog_string="*.*    @$endpoint:$port"
+
+
+#Determine Syslog Agent - Papertrail lists support for
+# Rsyslog, syslog-ng, syslog.conf - see: https://papertrailapp.com/systems/setup
+
+#todo: support syslog-ng with cheetah template
+#todo: support GNU Syslog with remote_syslog gem
+
+
+# if [ -a /etc/rsyslog.conf ] then
+# 	declare papertrail_agent="rsyslog"
+# 	juju-log "Papertrail - detected rsyslog"
+# fi
+
+
+
+# install rsyslog monitoring
+	
+if [ $port -eq 0 ]; then
+	juju-log "Papertrail not configured"
+	return 1
+fi
 
 if ! grep -qe "$papertrail_string" /etc/rsyslog.conf; then 
     echo "$papertrail_string" >> /etc/rsyslog.conf; 
-    juju-log "Installed Papertrail syslog support"
+    juju-log "Installed Papertrail rsyslog support"
 fi
 
-service rsyslog restart
