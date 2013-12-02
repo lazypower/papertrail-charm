@@ -1,0 +1,20 @@
+#!/bin/sh
+# This must be renamed to the name of the relation. The goal here is to
+# affect any change needed by the remote unit leaving the relationship.
+# This script should be idempotent.
+juju-log $JUJU_REMOTE_UNIT departed
+
+
+declare papertrail_endpoint=`config-get endpoint`
+declare papertrail_string="*.*    @$papertrail_endpoint"
+
+
+
+if ! grep -qe "$papertrail_string" /etc/rsyslog.conf; then 
+    declare escaped_string="$(printf '%q' $foo)"
+    #Replace the offending line in rsyslog.conf with a blank line 
+    sed -ie "/$escaped_string/d" /etc/rsyslog.conf 
+    juju-log "Removed Papertrail syslog support"
+fi
+
+service rsyslog restart
