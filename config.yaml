@@ -1,5 +1,13 @@
 options:
-  endpoint:
+  port:
+    type: int
+    default: 0
+    description: "Papertrail syslog port"
+  monitorall:
+    type: boolean
+    default: false
+    description: "Tail and ship all files in /var/log"
+  applicationlogs:
     type: string
-    default: "logs.papertrailapp.com:00000"
-    description: "Logging endpoint provisioned by papertrailapp"
+    default: ""
+    description: "Space seperated list of paths to application logs"
