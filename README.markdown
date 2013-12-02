@@ -16,20 +16,29 @@ Usage
 
 ##### IMPORTANT!
 
-You must set the papertrail port for this charm to work. Papertrailapp provides a port once you've registered for service at http://www.papertrailapp.com. You can scrape this port from their installation configuration guide:
+You must set the papertrail port for this charm to work. Papertrailapp provides a port once you've registered for service at [http://www.papertrailapp.com](http://www.papertrailapp.com). You can find the port from their installation configuration guide: [here](https://papertrailapp.com/systems/setup)
 
-For RSyslog - it will appear as so:
+For RSyslog - it will appear as so in */etc/rsyslog.d/25-papertrailapp.conf*:
 
 	*.*          @logs.papertrailapp.com:1234
 
 
 Configuration
 -------------
-
-- *int* port: Assigned syslog port from papertrail - *REQUIRED*
-
-- *bool* monitorall: Monitor all logs in /var/log
-- *string* applicationlogs: Space seperated list of application logs to monitor
+	options:
+  	port:
+      type: int
+      default: 0
+      description: Papertrail syslog port
+  	monitorall:
+      type: boolean
+      default: false
+      description: Tail and ship all files in /var/log
+  	applicationlogs:
+      type: string
+      default: ""
+      description: Space separated list of paths to application logs (eg: /opt/app.log /var/log/mylog.log  )
+    
 
 
 
@@ -40,5 +49,4 @@ Author: Charles Butler (chuck@dasroot.net)
 
 Report bugs at: http://bugs.launchpad.net/charms/+source/papertrail
 Location: http://jujucharms.com/charms/precise/papertrail
-
 
