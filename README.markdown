@@ -12,16 +12,25 @@ Usage
 
 
     juju deploy papertrail
+    juju set papertrail port=12345
 
-and so on. If you're providing a web service or something that the end user needs to go to, tell them here, especially if you're deploying a service that might listen to a non-default port.
+##### IMPORTANT!
 
-You can then browse to http://ip-address to configure the service.
+You must set the papertrail port for this charm to work. Papertrailapp provides a port once you've registered for service at http://www.papertrailapp.com. You can scrape this port from their installation configuration guide:
+
+For RSyslog - it will appear as so:
+
+	*.*          @logs.papertrailapp.com:1234
+
 
 Configuration
 -------------
 
+- *int* port: Assigned syslog port from papertrail - *REQUIRED*
 
-The configuration options will be listed on the charm store, however If you're making assumptions or opinionated decisions in the charm (like setting a default administrator password), you should detail that here so the user knows how to change it immediately, etc.
+- *bool* monitorall: Monitor all logs in /var/log
+- *string* applicationlogs: Space seperated list of application logs to monitor
+
 
 
 Contact Information
@@ -31,6 +40,5 @@ Author: Charles Butler (chuck@dasroot.net)
 
 Report bugs at: http://bugs.launchpad.net/charms/+source/papertrail
 Location: http://jujucharms.com/charms/precise/papertrail
-
 
 
