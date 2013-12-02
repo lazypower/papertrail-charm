@@ -1,8 +1,8 @@
 name: papertrail
-summary: This charm provides Papertrailapp logging from Papertrail as a subordinate for inclusion in other charm containers.
+summary: This charm provides log management from Papertrail.
 maintainer: Charles Butler <Charles.Butler@bushido>
 description: >
-  This charm provides Papertrailapp logging from Papertrail as a subordinate for inclusion in other charm containers. 
+  This charm provides Papertrailapp logging from Papertrail as a subordinate. 
 categories:
   - misc
 subordinate: true
