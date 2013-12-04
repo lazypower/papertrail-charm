@@ -3,7 +3,6 @@
 set -ex
 
 declare syslog_endpoint=`config-get syslog_endpoint`
-declare rsyslog_string="*.*    @$endpoint"
 declare applicationlogs=`config-get applicationlogs`
 declare  monitorall=`config-get monitorall`
 
@@ -13,19 +12,44 @@ if [ "$syslog_endpoint" -eq null ]; then
  	return 0
 fi
 
+
+juju-log "Monitor all $monitorall"
+juju-log "App Logs $applicationlogs"
 # Check if we should re-run the installer due to config changes
-if [ $monitorall != "false" ] || [ $applicationlogs != null ] then
+if [ "$monitorall" != "False" ] || [ "$applicationlogs" != "" ]; then
 	hooks/install
 fi
 
-if [ -a "/etc/rsyslog.d/25-papertrail.conf" ]; then 
-	rm /etc/rsyslog.d/25-papertrail.conf
-	juju-log "Removed stale papertrail configuration"
+#in the event of rsyslog - install the rsyslog configuration
+if [ -a "/etc/rsyslog.d" ]; then
+	if [ -a "/etc/rsyslog.d/25-papertrail.conf" ]; then 
+		rm /etc/rsyslog.d/25-papertrail.conf
+		juju-log "Removed stale papertrail configuration"
+	fi
+
+
+	echo "*.*        @$syslog_endpoint" >> /etc/rsyslog.d/25-papertrail.conf; 
+	juju-log "Updated Papertrail rsyslog support"
+ 	#TODO: Dont always assume upstart is the key 
+	service rsyslog restart
 fi
 
+#if we find syslog-ng, deploy the template
 
-echo "$rsyslog_string" >> /etc/rsyslog.d/25-papertrail.conf; 
-juju-log "Updated Papertrail rsyslog support"
+if [ -a "/etc/syslog-ng/conf.d" ]; then
+	if [ -a "/etc/syslog-ng/conf.d/25-papertrail.conf" ]; then
+					rm /etc/syslog-ng/conf.d/25-papertrail.conf
+					juju-log "Removed stale syslog-ng configuration"
+	fi
 
-
+	# not sure if this requires the shell ticks
+	declare syslogng_template=`cat $CHARM_DIR/files/syslog-ng.template \
+				 	| sed -e 's/{syslog_endpoint}/'${syslog_endpoint%:*}/ \
+				 	-e 's/{port}/'${syslog_endpoint#*:}/`
+	
+	echo $syslogng_template >> /etc/syslog-ng/conf.d/25-papertrail.conf
+	juju-log "Updated Papertrail syslog-ng support"
+ 	
+	service syslog-ng restart
+fi
 

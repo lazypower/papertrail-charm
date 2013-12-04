@@ -2,13 +2,13 @@
 
 set -ex 
 
-declare application_log = `config-get applicationlogs`
-declare monitorall = `config-get monitorall`
+declare application_log=`config-get applicationlogs`
+declare monitorall=`config-get monitorall`
 
 #TODO: Provide installation hooks for nxlog-ce for
 # a non-ruby alternative
 
-if [ $application_log != "" ] || [ $monitorall != "false"] then
+if [ "$application_log" != "" ] || [ "$monitorall" != "false" ]; then
 	# Install Dependencies for Application Logging
 	# Install ruby 1.9.3 for latest -stable tree. 
 	# TODO: Ruby changes fairly often, make this configurable 
