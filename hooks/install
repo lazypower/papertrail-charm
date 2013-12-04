@@ -1,33 +1,18 @@
 #!/bin/bash
 
+declare application_log = `config-get applicationlogs`
+declare monitorall = `config-get monitorall`
 
-# Install Dependencies for Application Logging
-# Install ruby 1.9.3 for latest -stable tree. 
-# TODO: Ruby changes fairly often, make this configurable 
-apt-get install -y ruby1.9.3 build-essential 
+#TODO: Provide installation hooks for nxlog-ce for
+# a non-ruby alternative
 
-# Install papertrails application logging support
-gem install remote_syslog --no-ri --no-rdoc
+if [ $application_log != "" ] || [ $monitorall != "false"] then
+	# Install Dependencies for Application Logging
+	# Install ruby 1.9.3 for latest -stable tree. 
+	# TODO: Ruby changes fairly often, make this configurable 
+	apt-get install -y ruby1.9.3 build-essential 
 
-#its not unlikely that this will change in the future
-declare endpoint="logs.papertrailapp.com"
-declare port=`config-get port`
-declare rsyslog_string="*.*    @$endpoint:$port"
-
-
-# install rsyslog monitoring
-	
-if [ "$port" -eq "0" ]; then
- 	juju-log "Papertrail not configured"
- 	return 1
+	# Install papertrails application logging support
+	gem install remote_syslog --no-ri --no-rdoc
 fi
-
-if [ -a "/etc/rsyslog.d/25-papertrail.conf" ]; then 
-    rm /etc/rsyslog.d/25-papertrail.conf
-    juju-log "Removed stale papertrail configuration"
-fi
-
-echo "$rsyslog_string" >> /etc/rsyslog.d/25-papertrail.conf; 
-juju-log "Updated Papertrail rsyslog support"
-
 
