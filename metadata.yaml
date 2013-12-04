@@ -2,15 +2,7 @@ name: papertrail
 summary: This charm provides log management from Papertrail.
 maintainer: Charles Butler <Charles.Butler@bushido>
 description: >
-  This charm provides Papertrailapp logging from Papertrail as a subordinate. 
+  This charm installs and configures Papertrailapp. Papertrail is a freemium log management PaaS. 
 categories:
   - misc
 subordinate: true
-provides:
-  logging:
-    interface: papertrail
-    scope: container
-requires:
-  juju-info:
-    interface: juju-info
-    scope: container
