@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex 
+
 declare application_log = `config-get applicationlogs`
 declare monitorall = `config-get monitorall`
 
