@@ -1,12 +1,10 @@
 #!/bin/bash
 
-declare port=`config-get port`
+declare syslog_endpoint=`config-get syslog_endpoint`
 declare monitor_all=`config-get monitorall`
 declare application_logs=`config-get applicationlogs`
 
-
-
-service rsyslog restart
+declare port=`${syslog_endpoint#*:}`
 
 # If monitor mode is on, ship everything in /var/log
 if [ $monitor_all != "False" ]; then
