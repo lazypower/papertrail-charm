@@ -4,8 +4,7 @@
 # re-run the installation script
 
 declare syslog_endpoint=`config-get syslog_endpoint`
-declare port=`config-get port`
-declare rsyslog_string="*.*    @$endpoint:$port"
+declare rsyslog_string="*.*    @$endpoint"
 
 
 # install rsyslog monitoring
