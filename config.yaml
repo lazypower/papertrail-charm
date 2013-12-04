@@ -1,8 +1,8 @@
 options:
   port:
-    type: int
-    default: 0
-    description: "Papertrail syslog port"
+    type: string
+    default: ""
+    description: "Papertrail syslog endpoint"
   monitorall:
     type: boolean
     default: false
