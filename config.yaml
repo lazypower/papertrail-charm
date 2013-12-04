@@ -1,5 +1,5 @@
 options:
-  port:
+  syslog_endpoint:
     type: string
     default: ""
     description: "Papertrail syslog endpoint"
