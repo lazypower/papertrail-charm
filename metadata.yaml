@@ -1,6 +1,6 @@
 name: papertrail
 summary: This charm provides log management from Papertrail.
-maintainer: Charles Butler <Charles.Butler@bushido>
+maintainer: Charles Butler <chuck@dasroot.net>
 description: >
   This charm installs and configures Papertrailapp. Papertrail is a freemium log management PaaS. 
 categories:
