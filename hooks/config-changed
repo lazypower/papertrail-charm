@@ -7,7 +7,7 @@ declare applicationlogs=`config-get applicationlogs`
 declare  monitorall=`config-get monitorall`
 
 # install rsyslog monitoring
-if [ "$syslog_endpoint" -eq null ]; then
+if [ "$syslog_endpoint" != "" ]; then
  	juju-log "Papertrail not configured"
  	return 0
 fi
