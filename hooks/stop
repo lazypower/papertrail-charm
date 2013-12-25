@@ -1,7 +1,5 @@
 #!/bin/bash
 
-service rsyslog restart
-
 if [ -a "/tmp/papertrail_monitor.pid"  ]; then
 	kill -9 `cat /tmp/papertrail_monitor.pid`
 fi
@@ -9,3 +7,7 @@ fi
 if [ -a "/tmp/papertrail_application.pid"  ]; then
 	kill -9 `cat /tmp/papertrail_application.pid`
 fi
+
+rm /etc/rsyslog.d/25-papertrail.conf
+
+service rsyslog restart
