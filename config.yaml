@@ -1,7 +1,7 @@
 options:
   syslog_endpoint:
     type: string
-    default: null
+    default: ""
     description: "Papertrail syslog endpoint"
   monitorall:
     type: boolean
@@ -9,5 +9,5 @@ options:
     description: "Tail and ship all files in /var/log"
   applicationlogs:
     type: string
-    default: null
+    default: ""
     description: "Space separated list of paths to application logs"
