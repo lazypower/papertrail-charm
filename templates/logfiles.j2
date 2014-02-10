@@ -1,0 +1,7 @@
+files:
+{% for file in applicationlogs.split() %}
+    - {{ file }}
+{% endfor %}
+destination:
+    host: {{ syslogendpoint.split(':')[0] }}
+    port: {{ syslogendpoint.split(':')[1] }}

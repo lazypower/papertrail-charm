@@ -1,0 +1,7 @@
+destination d_papertrail {
+  udp("{{ syslogendpoint.split(':')[0] }}" port({{ syslogendpoint.split(':')[1] }}));
+};
+# replace "s_sys" with the name you found:
+log {
+  source(s_src); destination(d_papertrail);
+};

@@ -1,0 +1,110 @@
+- hosts: all
+
+  vars:
+    syslog_endpoint: "{{ syslogendpoint }}"
+    application_logs: "{{ applicationlogs }}"
+
+  tasks:
+
+    # Make some assertions about our environment and configuration
+    - stat: path=/etc/rsyslog.d
+      register: rsyslog_present
+      tags:
+        - config-changed
+        - stop
+
+    - stat: path=/etc/syslog-ng/conf.d
+      register: syslogng_present
+      tags:
+        - config-changed
+        - stop
+
+    #Install dependencies for remote_syslog gem
+
+    - name: Install required packages.
+      apt: pkg={{ item }} state=latest update_cache=yes
+      with_items:
+        - ruby1.9.3
+        - build-essential
+      when: applicationlogs != ""
+      tags:
+        - install
+        - upgrade-charm
+        - config-changed
+
+    - name: Install remote_syslog
+      gem: name=remote_syslog state=latest user_install=no
+      when: applicationlogs != ""
+      tags:
+        - config-changed
+
+    # Template Generation
+
+    - name: Generate upstart config for remote_syslog
+      template: src=../templates/upstart.j2 dest=/etc/init/remote_syslog.conf
+      when: applicationlogs != ""
+      tags:
+        - config-changed
+
+    - name: Generate logfile template
+      template: src=../templates/logfiles.j2 dest=/etc/log_files.yml
+      when: applicationlogs != ""
+      tags:
+        - config-changed
+
+    - name: Generate Rsyslog Template
+      template: src=../templates/rsyslog.j2 dest=/etc/rsyslog.d/25-papertrail.conf
+      when: rsyslog_present.stat.isdir is defined and rsyslog_present.stat.isdir == true and syslog_endpoint != None
+      tags:
+        - config-changed
+
+    - name: Generate SyslogNG Template
+      template: src=../templates/syslogng.j2 dest=/etc/syslog-ng/conf.d/25-papertrail.conf
+      when: syslogng_present.stat.isdir is defined and syslogng_present.stat.isdir == true and syslog_endpoint != None
+      tags:
+        - config-changed
+
+    # Cleanup for Charm Removal
+
+    - name: Remove rsyslog endpoint
+      file: path=/etc/rsyslog.d/25-papertrail.conf state=absent
+      when: rsyslog_present.stat.isdir is defined and rsyslog_present.stat.isdir == true
+      tags:
+        - stop
+
+    - name: Remove upstart script for remote_syslog
+      file: path=/etc/log_files state=absent
+      tags:
+        - stop
+
+  # Interact with Daemons
+
+    - name: Stop remote_syslog service
+      service: name=remote_syslog state=stopped
+      tags:
+        - stop
+
+   - name: Start remote_syslog daemon
+      service: name=remote_syslog state=restarted
+      when: applicationlogs != ""
+      tags:
+        - config-changed
+        - start
+
+    - name: Restart rsyslog service
+      service: name=rsyslog state=restarted
+      when: rsyslog_present.stat.isdir is defined and rsyslog_present.stat.isdir == true
+      tags:
+        - start
+        - config-changed
+        - stop
+
+    - name: Restart syslogng service
+      service: name=syslog-ng state=restarted
+      when: syslogng_present.stat.isdir is defined and syslogng_present.stat.isdir == true
+      tags:
+        - start
+        - config-changed
+        - stop
+
+

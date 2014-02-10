@@ -1,18 +1,1 @@
-#!/bin/bash
-
-declare syslog_endpoint=`config-get syslog_endpoint`
-declare monitor_all=`config-get monitorall`
-declare application_logs=`config-get applicationlogs`
-
-declare port=`${syslog_endpoint#*:}`
-
-# If monitor mode is on, ship everything in /var/log
-if [ $monitor_all != "False" ]; then
-	remote_syslog -p $port /var/log/*.log /var/log/*/*.log --pid-file /tmp/papertrail_monitor.pid
-fi
-
-# Setup Application Monitoring
-if ! [ "$application_logs" == "" ]; then
-	remote_syslog --strip-color -p $port applicationlogs --pid-file /tmp/papertrail_application.pid
-fi
-
+hooks.py

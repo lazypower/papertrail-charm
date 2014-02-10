@@ -1,6 +1,0 @@
-destination d_papertrail {
-  udp("{syslog_endpoint}" port({port}));
-};
-log {
-  source(s_src); destination(d_papertrail);
-};

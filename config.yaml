@@ -1,12 +1,12 @@
 options:
-  syslog_endpoint:
+  syslogendpoint:
     type: string
     default: ""
     description: "Papertrail syslog endpoint"
   monitorall:
     type: boolean
     default: false
-    description: "Tail and ship all files in /var/log"
+    description: "Depreciated Config Flag - Does nothing"
   applicationlogs:
     type: string
     default: ""
